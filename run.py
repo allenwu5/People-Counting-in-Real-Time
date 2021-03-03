@@ -115,7 +115,8 @@ def run():
         # the writer
         if args["output"] is not None and writer is None:
             fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-            writer = cv2.VideoWriter(args["output"], fourcc, 30,
+            _fps = vs.get(cv2.CAP_PROP_FPS)
+            writer = cv2.VideoWriter(args["output"], fourcc, _fps,
                                      (W, H), True)
 
         # initialize the current status along with our list of bounding
@@ -301,12 +302,14 @@ def run():
                 wr.writerows(export_data)
 
         # show the output frame
-        cv2.imshow("Real-Time Monitoring/Analysis Window", frame)
-        key = cv2.waitKey(1) & 0xFF
+        # qt.qpa.xcb: could not connect to display
+        # cv2.imshow("Real-Time Monitoring/Analysis Window", frame)
+        writer.write(frame)
+        # key = cv2.waitKey(1) & 0xFF
 
         # if the `q` key was pressed, break from the loop
-        if key == ord("q"):
-            break
+        # if key == ord("q"):
+        # break
 
         # increment the total number of frames processed thus far and
         # then update the FPS counter
